@@ -1,6 +1,7 @@
 import type { RefObject } from "react";
 import { BOOKING_CHECKS, CARRIERS, bookingHref, carrierName } from "@/lib/booking";
 import { controlClass, headingClass, primaryButtonClass, secondaryButtonClass, sectionTitleClass } from "./field";
+import { ExternalIcon } from "./mile-mark";
 
 export function GuidanceStep({
   carrierId,
@@ -28,10 +29,10 @@ export function GuidanceStep({
     <div className="mx-auto max-w-3xl">
       {/* Header section */}
       <div>
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted mb-2">
-          <span className="size-2 rounded-full bg-emerald-600" />
-          <span>Stage 4 • Check on a public site</span>
-        </div>
+        <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted">
+          <span className="size-2 rounded-full bg-marker" aria-hidden="true" />
+          Stage 4 • Check on a public site
+        </p>
         <h1 ref={headingRef} tabIndex={-1} className={headingClass}>
           What to do before you book
         </h1>
@@ -42,14 +43,12 @@ export function GuidanceStep({
       </div>
 
       {/* 1. Interactive Pre-Booking Checklist */}
-      <section className="mt-8 rounded-xl border border-line bg-sheet p-5 sm:p-6 shadow-subtle hover:border-line-strong transition-all" aria-labelledby="checklist-title">
+      <section className="mt-8 border-t border-line pt-6" aria-labelledby="checklist-title">
         <div className="flex items-center justify-between border-b border-line pb-3.5">
           <h2 id="checklist-title" className={sectionTitleClass}>Pre-Booking Checklist</h2>
           <span
-            className={`rounded-full px-3 py-1 text-xs font-bold ${
-              allDone
-                ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
-                : "bg-subtle text-muted border border-line"
+            className={`rounded-sm px-2 py-1 text-sm font-semibold ${
+              allDone ? "bg-subtle text-ink" : "text-muted"
             }`}
           >
             {done} of {BOOKING_CHECKS.length} checked
@@ -91,7 +90,7 @@ export function GuidanceStep({
       </section>
 
       {/* 2. Airline / Partner Homepage Link */}
-      <section className="mt-5 rounded-xl border border-line bg-sheet p-5 sm:p-6 shadow-subtle hover:border-line-strong transition-all">
+      <section className="mt-8 border-t border-line pt-6">
         <div className="flex items-center justify-between border-b border-line pb-3">
           <h2 className={sectionTitleClass}>Open a site you already use</h2>
           <span className="text-xs text-muted">Direct homepage shortcut</span>
@@ -103,7 +102,7 @@ export function GuidanceStep({
         </p>
 
         <div className="mt-5 max-w-md">
-          <label htmlFor="carrier" className="block text-xs font-bold uppercase tracking-wider text-muted mb-1.5">
+          <label htmlFor="carrier" className="mb-1.5 block text-sm font-semibold text-ink">
             Public website
           </label>
           <select
@@ -127,11 +126,11 @@ export function GuidanceStep({
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${primaryButtonClass} no-underline min-h-[46px] px-6`}
+              className={`${primaryButtonClass} no-underline`}
             >
               Open the {name} homepage
               <span className="sr-only"> (opens in a new tab)</span>
-              <span aria-hidden="true" className="ml-1 text-xs">↗</span>
+              <ExternalIcon />
             </a>
             <p className="mt-2 text-xs text-tertiary">
               Opens in a new browser tab. Remember to confirm seat availability before transferring points.
@@ -146,7 +145,7 @@ export function GuidanceStep({
 
       {/* Navigation action buttons */}
       <div className="mt-8 flex flex-col sm:flex-row items-center gap-3">
-        <button type="button" className={`${primaryButtonClass} min-h-[50px] px-7 shadow-card`} onClick={onStartOver}>
+        <button type="button" className={primaryButtonClass} onClick={onStartOver}>
           Plan another trip
         </button>
         <button type="button" className={secondaryButtonClass} onClick={onEdit}>

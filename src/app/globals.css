@@ -1,39 +1,40 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #fbfbf9;
-  --sheet: #ffffff;
-  --subtle: #f4f4f0;
-  --subtle-hover: #efefea;
-  --ink: #121212;
-  --muted: #5a5a57;
-  --tertiary: #8c8c87;
-  --line: #ebebe6;
-  --line-strong: #ddddd6;
-  --depth: #121212;
-  --foam: #ffffff;
-  --foam-muted: #d4d4ce;
+  --paper: #f3ecdf;
+  --sheet: #faf6ef;
+  --subtle: #efe4d2;
+  --subtle-hover: #e7d9c2;
+  --ink: #102033;
+  --muted: #3c5160;
+  --tertiary: #4d6272;
+  --line: #d4cbbd;
+  --line-strong: #b7ab9a;
+  --depth: #102033;
+  --foam: #f7f1e6;
+  --foam-muted: #d5dee6;
   --marker: #e0ae3a;
   --marker-press: #c99622;
-  --cost: #b91c1c;
-  --cost-bg: #fef2f2;
-  --cost-border: #fecaca;
-  --save: #15803d;
-  --save-bg: #f0fdf4;
-  --save-border: #bbf7d0;
-  --accent: #2563eb;
-  --accent-bg: #eff6ff;
-  --accent-border: #bfdbfe;
+  --marker-active: #b7861c;
+  --cost: #8d2e2e;
+  --cost-bg: #f6ebe6;
+  --cost-border: #e0c4bc;
+  --save: #1c6b45;
+  --save-bg: #e7f2eb;
+  --save-border: #b7d4c4;
+  --accent: #3c5160;
+  --accent-bg: #efe4d2;
+  --accent-border: #d4cbbd;
 
-  --shadow-subtle: 0 1px 2px rgba(18, 18, 18, 0.04);
-  --shadow-card: 0 1px 3px rgba(18, 18, 18, 0.05), 0 4px 12px rgba(18, 18, 18, 0.02);
-  --shadow-float: 0 12px 28px -6px rgba(18, 18, 18, 0.08), 0 4px 10px -2px rgba(18, 18, 18, 0.03);
-  --shadow-modal: 0 20px 48px -10px rgba(18, 18, 18, 0.14), 0 6px 16px rgba(18, 18, 18, 0.04);
+  --shadow-subtle: none;
+  --shadow-card: none;
+  --shadow-float: 0 18px 36px -24px rgba(16, 32, 51, 0.6);
+  --shadow-modal: 0 18px 36px -24px rgba(16, 32, 51, 0.6);
 
   --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
+  --radius-md: 6px;
+  --radius-lg: 12px;
+  --radius-xl: 12px;
   --radius-full: 9999px;
 
   color-scheme: light;
@@ -53,6 +54,8 @@
   --color-foam: var(--foam);
   --color-foam-muted: var(--foam-muted);
   --color-marker: var(--marker);
+  --color-marker-press: var(--marker-press);
+  --color-marker-active: var(--marker-active);
   --color-cost: var(--cost);
   --color-cost-bg: var(--cost-bg);
   --color-cost-border: var(--cost-border);
@@ -101,7 +104,7 @@ select {
 
 :focus-visible {
   outline: 2px solid var(--ink);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
 .bg-ink:focus-visible {
@@ -109,8 +112,8 @@ select {
 }
 
 .choice:has(:focus-visible) {
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
+  outline: 2px solid var(--marker);
+  outline-offset: 3px;
 }
 
 a {
@@ -128,13 +131,16 @@ a {
   z-index: 30;
   transform: translateY(-160%);
   border-radius: var(--radius-sm);
-  background: var(--ink);
-  color: #ffffff;
+  background: var(--marker);
+  color: var(--ink);
   padding: 0.5rem 0.85rem;
   font-weight: 600;
   font-size: 0.875rem;
-  box-shadow: var(--shadow-float);
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header-link:focus-visible {
+  outline-color: var(--marker);
 }
 
 .skip-link:focus {
@@ -151,9 +157,7 @@ a {
 }
 
 .hover-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card);
-  border-color: var(--line-strong);
+  border-color: var(--ink);
 }
 
 @keyframes estimate-draw {

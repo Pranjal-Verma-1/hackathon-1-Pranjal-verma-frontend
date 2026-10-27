@@ -13,7 +13,7 @@ import {
 import { CloudRecordsError } from "@/lib/cloud-records";
 import { loyaltyPrograms, sampleBalances } from "@/lib/loyalty";
 import { formatPoints } from "@/lib/money";
-import { headingClass, primaryButtonClass, secondaryButtonClass, sectionTitleClass } from "./field";
+import { controlClass, headingClass, primaryButtonClass, secondaryButtonClass, sectionTitleClass } from "./field";
 
 function cloudMessage(error: unknown, fallback: string) {
   return error instanceof CloudRecordsError ? error.message : fallback;
@@ -86,8 +86,7 @@ export function WalletScreen() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <p className="text-xs font-bold uppercase tracking-wider text-muted">Your account</p>
-      <h1 className={`${headingClass} mt-3`}>Miles wallet</h1>
+      <h1 className={headingClass}>Miles wallet</h1>
       <p className="mt-4 text-base leading-relaxed text-muted">
         Balances are stored with the signed-in account. They are not sent with a comparison, and they are not treated as transferable or enough for a redemption. Copies already in this browser are left as they are.
       </p>
@@ -121,7 +120,7 @@ export function WalletScreen() {
                 </label>
                 <select
                   id={programFieldId}
-                  className="mt-1.5 min-h-12 w-full rounded-md border border-line-strong bg-sheet px-3 text-base text-ink outline-none focus-visible:outline-2 focus-visible:outline-ink"
+                  className={`${controlClass} mt-1.5`}
                   value={programId}
                   onChange={(event) => setProgramId(event.target.value)}
                 >
@@ -139,7 +138,7 @@ export function WalletScreen() {
                 <input
                   id={balanceFieldId}
                   inputMode="numeric"
-                  className="mt-1.5 min-h-12 w-full rounded-md border border-line-strong bg-sheet px-3 text-base text-ink outline-none focus-visible:outline-2 focus-visible:outline-ink"
+                  className={`${controlClass} mt-1.5`}
                   value={balanceText}
                   aria-invalid={error ? true : undefined}
                   aria-describedby={error ? `${balanceFieldId}-error` : undefined}

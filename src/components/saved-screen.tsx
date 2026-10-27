@@ -5,7 +5,7 @@ import { reloadSavedCloud, removeBrowserComparison, savedCloudServerSnapshot, sa
 import { CloudRecordsError } from "@/lib/cloud-records";
 import { comparisonBadge, comparisonFigureLabel, formatApiEuros, formatApiPercent } from "@/lib/comparison-api";
 import { formatSavedAt } from "@/lib/local-records";
-import { headingClass, secondaryButtonClass } from "./field";
+import { headingClass, primaryButtonClass, secondaryButtonClass } from "./field";
 
 export function SavedScreen() {
   const stored = useSyncExternalStore(subscribeSavedCloud, savedCloudSnapshot, savedCloudServerSnapshot);
@@ -31,8 +31,7 @@ export function SavedScreen() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <p className="text-xs font-bold uppercase tracking-wider text-muted">Your account</p>
-      <h1 className={`${headingClass} mt-3`}>Saved comparisons</h1>
+      <h1 className={headingClass}>Saved comparisons</h1>
       <p className="mt-4 text-base leading-relaxed text-muted">
         Each card is the comparison response saved at the time, including its timestamp. Opening one shows that response again. It is not calculated a second time. Copies already in this browser are left as they are.
       </p>
@@ -76,13 +75,21 @@ export function SavedScreen() {
             const percent = formatApiPercent(record.result.estimatedSavingsPercent);
             return (
               <li key={record.id} className="rounded-xl border border-line bg-sheet p-5 shadow-subtle">
-                <p className="text-xs font-bold uppercase tracking-wider text-muted">Saved {formatSavedAt(record.savedAt)}</p>
+                <p className="text-sm text-muted">Saved {formatSavedAt(record.savedAt)}</p>
                 <h2 className="mt-2 text-xl font-bold text-ink">
                   {record.result.origin} to {record.result.destination}
                 </h2>
                 <p className="mt-3 text-sm font-semibold text-ink">{comparisonBadge(record.result)}</p>
                 <p className="mt-2 text-sm text-muted">{comparisonFigureLabel(record.result)}</p>
-                <p className="mt-1 text-2xl font-bold text-ink">
+                <p
+                  className={`mt-1 text-3xl font-semibold tabular-nums ${
+                    record.result.appearsWorthwhile && record.result.estimatedSavingsEuros > 0
+                      ? "text-save"
+                      : record.result.estimatedSavingsEuros < 0
+                        ? "text-cost"
+                        : "text-ink"
+                  }`}
+                >
                   {formatApiEuros(record.result.estimatedSavingsEuros)}
                   {percent ? <span className="ml-2 text-base">{percent}</span> : null}
                 </p>
@@ -90,7 +97,7 @@ export function SavedScreen() {
                 <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                   <a
                     href={`/?saved=${encodeURIComponent(record.id)}`}
-                    className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-ink px-6 text-sm font-semibold text-white sm:w-auto"
+                    className={`${primaryButtonClass} no-underline`}
                   >
                     Open this comparison
                   </a>

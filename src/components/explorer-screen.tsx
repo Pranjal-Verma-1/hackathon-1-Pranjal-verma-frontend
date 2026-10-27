@@ -85,8 +85,7 @@ export function ExplorerScreen() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <p className="text-xs font-bold uppercase tracking-wider text-muted">Your account</p>
-      <h1 className={`${headingClass} mt-3`}>Trip explorer</h1>
+      <h1 className={headingClass}>Trip explorer</h1>
       <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted">
         These figures are estimates from comparisons you saved. Each one uses the cash fare, points, and taxes entered at the time. They are not live fares, award seats, or bookings.
       </p>
@@ -184,7 +183,7 @@ export function ExplorerScreen() {
             </p>
           ) : (
             <>
-              <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Estimate totals">
+              <section className="mt-8 grid border-y border-line sm:grid-cols-2 lg:grid-cols-4" aria-label="Estimate totals">
                 <Metric label="Saved comparisons" value={String(metrics.count)} note="Each saved comparison is counted once." />
                 <Metric
                   label="Total estimated difference"
@@ -245,11 +244,19 @@ export function ExplorerScreen() {
                   const readiness = pointsReadinessText(pointsReadiness(record, account.balances));
                   return (
                     <li key={record.id} className="rounded-xl border border-line bg-sheet p-5 shadow-subtle">
-                      <p className="text-xs font-bold uppercase tracking-wider text-muted">Saved {formatSavedAt(record.savedAt)}</p>
+                      <p className="text-sm text-muted">Saved {formatSavedAt(record.savedAt)}</p>
                       <h2 className="mt-2 text-xl font-bold text-ink">
                         {record.result.origin} to {record.result.destination}
                       </h2>
-                      <p className="mt-3 text-2xl font-bold text-ink">
+                      <p
+                        className={`mt-3 text-3xl font-semibold tabular-nums ${
+                          record.result.appearsWorthwhile && record.result.estimatedSavingsEuros > 0
+                            ? "text-save"
+                            : record.result.estimatedSavingsEuros < 0
+                              ? "text-cost"
+                              : "text-ink"
+                        }`}
+                      >
                         {formatApiEuros(record.result.estimatedSavingsEuros)}
                         {percent ? <span className="ml-2 text-base">{percent}</span> : <span className="ml-2 text-base text-muted">Percentage unavailable</span>}
                       </p>
@@ -277,10 +284,10 @@ export function ExplorerScreen() {
 
 function Metric({ label, value, note }: { label: string; value: string; note: string }) {
   return (
-    <article className="rounded-xl border border-line bg-sheet p-4 shadow-subtle">
-      <h3 className="text-xs font-bold uppercase tracking-wider text-muted">{label}</h3>
-      <p className="mt-2 text-2xl font-bold text-ink">{value}</p>
-      <p className="mt-2 text-xs leading-relaxed text-muted">{note}</p>
+    <article className="border-b border-line py-4 lg:border-b-0 lg:border-r lg:pr-4 lg:last:border-r-0">
+      <h3 className="text-sm text-muted">{label}</h3>
+      <p className="mt-2 text-2xl font-semibold tracking-[-0.025em] text-ink">{value}</p>
+      <p className="mt-2 text-sm leading-6 text-muted">{note}</p>
     </article>
   );
 }

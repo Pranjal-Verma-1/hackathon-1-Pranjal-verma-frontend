@@ -10,6 +10,7 @@ import {
   secondaryButtonClass,
   sectionTitleClass,
 } from "./field";
+import { ArrowIcon } from "./mile-mark";
 
 const inputClass = `${controlClass} h-12 tabular-nums`;
 
@@ -44,10 +45,6 @@ export function TripForm({
     <form onSubmit={submit} noValidate className="mx-auto max-w-3xl">
       {/* Header section */}
       <div>
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted mb-2">
-          <span className="size-2 rounded-full bg-marker" />
-          <span>Stage 2 • Trip Parameters</span>
-        </div>
         <h1 ref={headingRef} tabIndex={-1} className={headingClass}>
           {title}
         </h1>
@@ -67,7 +64,6 @@ export function TripForm({
       <section className="mt-8 rounded-xl border border-line bg-sheet p-5 sm:p-6 shadow-subtle hover:border-line-strong transition-all">
         <div className="flex items-center justify-between border-b border-line pb-3">
           <h2 className={sectionTitleClass}>Route</h2>
-          <span className="text-xs text-muted">Flight corridor</span>
         </div>
 
         <div className="mt-5 grid items-end gap-3 sm:grid-cols-[minmax(0,1fr)_4rem_minmax(0,1fr)]">
@@ -84,8 +80,8 @@ export function TripForm({
 
           <div className="flex h-12 items-center justify-center" aria-hidden="true">
             <span className="h-6 w-px bg-line-strong sm:h-px sm:w-3" />
-            <span className="mx-1.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-subtle border border-line text-xs font-bold text-ink">
-              ➔
+            <span className="mx-1.5 flex size-8 shrink-0 items-center justify-center rounded-full border border-line bg-subtle text-ink">
+              <ArrowIcon />
             </span>
             <span className="hidden h-px w-3 bg-line-strong sm:block" />
           </div>
@@ -111,12 +107,11 @@ export function TripForm({
       {/* 2. Dates & Trip Type Section */}
       <section className="mt-5 rounded-xl border border-line bg-sheet p-5 sm:p-6 shadow-subtle hover:border-line-strong transition-all">
         <div className="flex items-center justify-between border-b border-line pb-3">
-          <h2 className={sectionTitleClass}>Dates & Travel Direction</h2>
-          <span className="text-xs text-muted">Schedule</span>
+          <h2 className={sectionTitleClass}>Dates and direction</h2>
         </div>
 
         <fieldset className="mt-5">
-          <legend className="text-xs font-bold uppercase tracking-wider text-muted">Itinerary Type</legend>
+          <legend className="text-sm font-semibold text-ink">Itinerary type</legend>
           <div className="mt-2.5 flex flex-wrap gap-3">
             {(
               [
@@ -130,7 +125,7 @@ export function TripForm({
                   key={value}
                   className={`inline-flex min-h-11 cursor-pointer items-center gap-2.5 rounded-lg border px-4 text-sm font-semibold transition-all ${
                     checked
-                      ? "border-ink bg-ink text-white shadow-sm"
+                      ? "border-ink bg-ink text-foam"
                       : "border-line bg-subtle/50 text-ink hover:border-line-strong hover:bg-subtle"
                   }`}
                 >
@@ -142,7 +137,7 @@ export function TripForm({
                     onChange={() => onChange({ tripType: value satisfies TripType })}
                     className="sr-only"
                   />
-                  <span className={`size-3 rounded-full border ${checked ? "border-white bg-white" : "border-muted"}`} />
+                  <span className={`size-3 rounded-full border ${checked ? "border-foam bg-foam" : "border-muted"}`} />
                   {label}
                 </label>
               );
@@ -322,24 +317,21 @@ export function TripForm({
         </div>
 
         <p className="mt-3 text-sm leading-relaxed text-muted">
-          Compare the published cash fare against the points redemption. Both figures represent
-          the grand total for your party, in euros where money is due.
+          Compare the cash fare with the points redemption. Both figures are the totals you enter for this party.
         </p>
 
         {/* Editable Example Quick Action */}
         <div className="mt-4 rounded-lg border border-line bg-subtle/50 p-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-muted">
-                Need a starting point?
-              </span>
-              <p className="text-xs text-muted mt-0.5">
-                Load Madrid to Barcelona sample rates (€186 cash, 12,500 pts, €42 taxes).
+              <p className="text-sm font-semibold text-ink">Madrid to Barcelona sample</p>
+              <p className="mt-1 text-sm leading-6 text-muted">
+                €186 cash, 12,500 points, and €42 taxes. Editable, and not a live fare.
               </p>
             </div>
             <button
               type="button"
-              className={`${secondaryButtonClass} text-xs py-2 px-3.5 min-h-[38px] shrink-0`}
+              className={`${secondaryButtonClass} shrink-0`}
               onClick={onExample}
             >
               Load editable example
@@ -429,12 +421,12 @@ export function TripForm({
       <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
         <button
           type="submit"
-          className={`${primaryButtonClass} min-h-[50px] px-8 text-base shadow-card`}
+          className={primaryButtonClass}
           disabled={submitting}
           aria-busy={submitting}
         >
           {submitting ? "Comparing these figures" : "Compare these figures"}
-          <span aria-hidden="true">➔</span>
+          {submitting ? null : <ArrowIcon />}
         </button>
         <span className="text-xs text-muted">
           Sent to the comparison service. Not a live fare or a booking.

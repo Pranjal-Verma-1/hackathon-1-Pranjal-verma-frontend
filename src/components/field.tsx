@@ -2,18 +2,20 @@ import type { ReactElement, ReactNode } from "react";
 import { stampControl } from "@/lib/control-props";
 
 export const controlClass =
-  "min-h-12 w-full max-w-full rounded-md border border-line-strong bg-sheet px-3.5 text-base leading-normal text-ink outline-none transition-all placeholder:text-tertiary hover:border-ink focus:border-ink focus-visible:outline-2 focus-visible:outline-ink focus-visible:outline-offset-2";
+  "min-h-12 w-full max-w-full rounded-sm border border-line bg-sheet px-3 text-base leading-normal text-ink outline-none transition-colors placeholder:text-tertiary hover:border-ink focus-visible:outline-2 focus-visible:outline-ink focus-visible:outline-offset-3";
 
 export const primaryButtonClass =
-  "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-ink px-6 text-sm font-semibold text-white shadow-subtle transition-all hover:-translate-y-0.5 hover:shadow-card hover:bg-[#000000] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:shadow-none sm:w-auto cursor-pointer";
+  "inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-sm bg-marker px-6 text-base font-semibold text-ink shadow-[inset_0_-1px_0_rgba(16,32,51,0.18)] transition-colors duration-150 hover:bg-marker-press active:bg-marker-active disabled:cursor-not-allowed disabled:hover:bg-marker sm:w-auto";
 
 export const secondaryButtonClass =
-  "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-line-strong bg-sheet px-6 text-sm font-semibold text-ink shadow-subtle transition-all hover:-translate-y-0.5 hover:bg-subtle hover:border-ink active:translate-y-0 disabled:cursor-not-allowed disabled:text-muted disabled:hover:translate-y-0 sm:w-auto cursor-pointer";
+  "inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-sm border border-ink bg-transparent px-6 text-base font-semibold text-ink transition-colors duration-150 hover:bg-sheet active:bg-paper disabled:cursor-not-allowed disabled:border-line disabled:text-muted sm:w-auto";
 
 export const headingClass =
-  "display text-3xl font-bold leading-[1.12] tracking-tight text-balance text-ink outline-none sm:text-4xl lg:text-5xl";
+  "display text-[2.35rem] font-semibold leading-[1.08] tracking-[-0.03em] text-balance text-ink outline-none sm:text-5xl";
 
-export const sectionTitleClass = "text-base font-bold tracking-tight text-ink";
+export const sectionTitleClass = "display text-2xl font-semibold leading-snug tracking-[-0.03em] text-ink";
+
+export const panelClass = "rounded-lg border border-line bg-sheet";
 
 export function Field({
   id,

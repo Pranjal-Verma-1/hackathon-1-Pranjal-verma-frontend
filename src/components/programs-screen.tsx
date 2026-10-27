@@ -16,8 +16,7 @@ export function ProgramsScreen() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <p className="text-xs font-bold uppercase tracking-wider text-muted">Reference</p>
-      <h1 className={`${headingClass} mt-3`}>Programs and transfers</h1>
+      <h1 className={headingClass}>Programs and transfers</h1>
       <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted">{TRANSFER_REFERENCE_NOTE}</p>
 
       <div className="mt-8 overflow-x-auto rounded-xl border border-line bg-sheet shadow-subtle">

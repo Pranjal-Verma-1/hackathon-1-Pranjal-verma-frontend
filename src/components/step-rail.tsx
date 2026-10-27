@@ -1,3 +1,5 @@
+import { CheckIcon } from "./mile-mark";
+
 export const STEPS = [
   { id: "mode", label: "Choose", number: "1" },
   { id: "trip", label: "Trip", number: "2" },
@@ -20,7 +22,7 @@ export function StepRail({
 
   return (
     <nav aria-label="Trip progress" className="w-full">
-      <ol className="grid grid-cols-4 gap-2 sm:gap-4 border-b border-line pb-4">
+      <ol className="grid grid-cols-4 gap-2 border-b border-line pb-4 sm:gap-4">
         {STEPS.map((step, index) => {
           const active = step.id === current;
           const enabled = canVisit(step.id);
@@ -33,43 +35,33 @@ export function StepRail({
                 aria-current={active ? "step" : undefined}
                 disabled={!enabled}
                 onClick={() => onVisit(step.id)}
-                className={`group flex w-full flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-2.5 rounded-lg p-2 text-left transition-all ${
-                  active
-                    ? "bg-sheet border border-line shadow-subtle cursor-default"
-                    : done
-                      ? "cursor-pointer hover:bg-sheet hover:border-line border border-transparent"
-                      : "cursor-not-allowed opacity-50 border border-transparent"
+                className={`group flex w-full flex-col items-center gap-2 rounded-sm p-1 text-left sm:flex-row sm:items-center ${
+                  enabled ? "cursor-pointer" : "cursor-not-allowed"
                 }`}
               >
                 <span
-                  className={`flex size-6 sm:size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all ${
+                  className={`flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
                     active
-                      ? "bg-ink text-white shadow-sm"
+                      ? "bg-marker text-ink"
                       : done
-                        ? "bg-ink/10 text-ink font-semibold"
-                        : "bg-subtle text-muted"
+                        ? "bg-ink text-foam"
+                        : "border border-line bg-paper text-muted"
                   }`}
                 >
-                  {done ? "✓" : step.number}
+                  {done ? <CheckIcon /> : step.number}
                 </span>
-                <div className="flex flex-col text-center sm:text-left">
-                  <span
-                    className={`text-xs sm:text-sm font-semibold tracking-tight transition-colors ${
-                      active ? "text-ink" : done ? "text-ink group-hover:text-black" : "text-muted"
-                    }`}
-                  >
-                    {step.label}
-                  </span>
-                  <span className="hidden sm:inline text-[11px] text-tertiary">
+                <span className="flex flex-col text-center sm:text-left">
+                  <span className={`text-sm font-semibold ${active || done ? "text-ink" : "text-muted"}`}>{step.label}</span>
+                  <span className="hidden text-xs text-muted sm:inline">
                     {step.id === "mode"
-                      ? "Select format"
+                      ? "Select a mode"
                       : step.id === "trip"
-                        ? "Enter details"
+                        ? "Enter the quote"
                         : step.id === "compare"
-                          ? "Financial math"
-                          : "Final checklist"}
+                          ? "See the difference"
+                          : "Check before booking"}
                   </span>
-                </div>
+                </span>
               </button>
             </li>
           );

@@ -16,7 +16,8 @@ import {
   subscribeLegacyMigration,
 } from "@/lib/migrate-records";
 import { SupabaseConfigError, getSupabaseBrowserClient } from "@/lib/supabase";
-import { headingClass, primaryButtonClass, secondaryButtonClass } from "./field";
+import { controlClass, headingClass, primaryButtonClass, secondaryButtonClass } from "./field";
+import { MileMark } from "./mile-mark";
 
 export function AccountScreen() {
   const emailId = useId();
@@ -122,8 +123,10 @@ export function AccountScreen() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <p className="text-xs font-bold uppercase tracking-wider text-muted">Account</p>
-      <h1 className={`${headingClass} mt-3`}>Your account</h1>
+      <div className="flex items-center gap-3">
+        <MileMark className="size-8 text-marker" />
+        <h1 className={headingClass}>Your account</h1>
+      </div>
       <p className="mt-4 text-base leading-relaxed text-muted">
         Sign in with email. Balances and saved comparisons are stored with the signed-in account. Older copies already in this browser are left as they are.
       </p>
@@ -201,7 +204,7 @@ export function AccountScreen() {
                 id={emailId}
                 type="email"
                 autoComplete="email"
-                className="mt-1.5 min-h-12 w-full rounded-md border border-line-strong bg-sheet px-3 text-base text-ink outline-none focus-visible:outline-2 focus-visible:outline-ink"
+                className={`${controlClass} mt-1.5`}
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
               />
@@ -214,7 +217,7 @@ export function AccountScreen() {
                 id={passwordId}
                 type="password"
                 autoComplete="current-password"
-                className="mt-1.5 min-h-12 w-full rounded-md border border-line-strong bg-sheet px-3 text-base text-ink outline-none focus-visible:outline-2 focus-visible:outline-ink"
+                className={`${controlClass} mt-1.5`}
                 value={password}
                 aria-invalid={error ? true : undefined}
                 aria-describedby={error ? `${passwordId}-error` : undefined}
