@@ -1,33 +1,79 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #e6eef0;
-  --sheet: #f7fafb;
-  --ink: #14202b;
-  --muted: #243846;
-  --line: #c5d2d8;
-  --depth: #0c3a48;
-  --foam: #e8f3f5;
-  --foam-muted: #d7ebf0;
-  --marker: #f2c14e;
-  --cost: #6e2b2b;
-  --cost-foam: #f8eceb;
+  --paper: #fbfbf9;
+  --sheet: #ffffff;
+  --subtle: #f4f4f0;
+  --subtle-hover: #efefea;
+  --ink: #121212;
+  --muted: #5a5a57;
+  --tertiary: #8c8c87;
+  --line: #ebebe6;
+  --line-strong: #ddddd6;
+  --depth: #121212;
+  --foam: #ffffff;
+  --foam-muted: #d4d4ce;
+  --marker: #e0ae3a;
+  --marker-press: #c99622;
+  --cost: #b91c1c;
+  --cost-bg: #fef2f2;
+  --cost-border: #fecaca;
+  --save: #15803d;
+  --save-bg: #f0fdf4;
+  --save-border: #bbf7d0;
+  --accent: #2563eb;
+  --accent-bg: #eff6ff;
+  --accent-border: #bfdbfe;
+
+  --shadow-subtle: 0 1px 2px rgba(18, 18, 18, 0.04);
+  --shadow-card: 0 1px 3px rgba(18, 18, 18, 0.05), 0 4px 12px rgba(18, 18, 18, 0.02);
+  --shadow-float: 0 12px 28px -6px rgba(18, 18, 18, 0.08), 0 4px 10px -2px rgba(18, 18, 18, 0.03);
+  --shadow-modal: 0 20px 48px -10px rgba(18, 18, 18, 0.14), 0 6px 16px rgba(18, 18, 18, 0.04);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
   color-scheme: light;
 }
 
 @theme inline {
   --color-paper: var(--paper);
   --color-sheet: var(--sheet);
+  --color-subtle: var(--subtle);
+  --color-subtle-hover: var(--subtle-hover);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
+  --color-tertiary: var(--tertiary);
   --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
   --color-depth: var(--depth);
   --color-foam: var(--foam);
   --color-foam-muted: var(--foam-muted);
   --color-marker: var(--marker);
   --color-cost: var(--cost);
-  --color-cost-foam: var(--cost-foam);
-  --font-sans: var(--font-schibsted), sans-serif;
+  --color-cost-bg: var(--cost-bg);
+  --color-cost-border: var(--cost-border);
+  --color-save: var(--save);
+  --color-save-bg: var(--save-bg);
+  --color-save-border: var(--save-border);
+  --color-accent: var(--accent);
+  --color-accent-bg: var(--accent-bg);
+  --color-accent-border: var(--accent-border);
+
+  --font-sans: var(--font-schibsted), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: var(--font-literata), "Iowan Old Style", Palatino, serif;
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  --shadow-subtle: var(--shadow-subtle);
+  --shadow-card: var(--shadow-card);
+  --shadow-float: var(--shadow-float);
 }
 
 body {
@@ -42,25 +88,29 @@ body {
 }
 
 ::placeholder {
-  color: var(--muted);
+  color: var(--tertiary);
   opacity: 1;
 }
 
 input,
 textarea,
 select {
-  caret-color: var(--depth);
-  accent-color: var(--depth);
+  caret-color: var(--ink);
+  accent-color: var(--ink);
 }
 
 :focus-visible {
-  outline: 2px solid var(--depth);
-  outline-offset: 3px;
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.bg-ink:focus-visible {
+  outline-color: var(--marker);
 }
 
 .choice:has(:focus-visible) {
-  outline: 2px solid var(--marker);
-  outline-offset: 3px;
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
 }
 
 a {
@@ -68,23 +118,42 @@ a {
 }
 
 * {
-  scrollbar-color: var(--depth) var(--paper);
+  scrollbar-color: var(--line-strong) var(--paper);
 }
 
 .skip-link {
   position: absolute;
   left: 1rem;
   top: 1rem;
-  z-index: 20;
+  z-index: 30;
   transform: translateY(-160%);
-  background: var(--marker);
-  color: var(--ink);
-  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  color: #ffffff;
+  padding: 0.5rem 0.85rem;
   font-weight: 600;
+  font-size: 0.875rem;
+  box-shadow: var(--shadow-float);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .skip-link:focus {
   transform: none;
+}
+
+.display {
+  font-family: var(--font-literata), "Iowan Old Style", Palatino, serif;
+  letter-spacing: -0.03em;
+}
+
+.hover-card {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease;
+}
+
+.hover-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+  border-color: var(--line-strong);
 }
 
 @keyframes estimate-draw {
@@ -101,10 +170,31 @@ a {
   animation: estimate-draw 0.9s cubic-bezier(0.16, 1, 0.3, 1) infinite alternate;
 }
 
+@keyframes route-draw {
+  from {
+    stroke-dashoffset: 640;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.route-draw {
+  stroke-dasharray: 640;
+  animation: route-draw 1.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .estimate-bar {
+  .estimate-bar,
+  .route-draw,
+  .hover-card {
     animation: none;
-    transform: none;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .route-draw {
+    stroke-dashoffset: 0;
   }
 
   .skip-link {

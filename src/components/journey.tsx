@@ -141,7 +141,7 @@ export function Journey() {
     phase.name === "editing" ? { name: "empty" } : phase.name === "calculating" ? { name: "calculating" } : phase;
 
   return (
-    <main id="main" className="mx-auto w-full max-w-3xl px-5 pb-16 pt-6 sm:pt-10">
+    <main id="main" className="mx-auto w-full max-w-6xl px-4 pb-16 pt-6 sm:px-6 sm:pt-8">
       <StepRail current={step} canVisit={canVisit} onVisit={goTo} />
       <div className="mt-8">
         {step === "mode" ? (
