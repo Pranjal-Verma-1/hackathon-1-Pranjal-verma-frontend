@@ -24,10 +24,15 @@ test("header links open the compare step and real sections", () => {
 
   assert.equal(compare?.kind, "compare-step");
   assert.equal("href" in (compare ?? {}), false);
-  assert.equal(how && "href" in how ? how.href : "", `#${HOW_IT_WORKS_ID}`);
-  assert.equal(method && "href" in method ? method.href : "", `#${PRINCIPLES_ID}`);
+  assert.equal(how && "href" in how ? how.href : "", `/#${HOW_IT_WORKS_ID}`);
+  assert.equal(method && "href" in method ? method.href : "", `/#${PRINCIPLES_ID}`);
+  assert.equal(HEADER_LINKS.find((link) => link.label === "Programs" && "href" in link)?.href, "/programs");
+  assert.equal(HEADER_LINKS.find((link) => link.label === "Wallet" && "href" in link)?.href, "/wallet");
+  assert.equal(HEADER_LINKS.find((link) => link.label === "Saved" && "href" in link)?.href, "/saved");
+  assert.equal(HEADER_LINKS.find((link) => link.label === "Explorer" && "href" in link)?.href, "/explorer");
+  assert.equal(HEADER_LINKS.find((link) => link.label === "Account" && "href" in link)?.href, "/account");
   assert.deepEqual(
     HEADER_LINKS.map((link) => ("href" in link ? link.href : link.kind)),
-    ["compare-step", `#${HOW_IT_WORKS_ID}`, `#${PRINCIPLES_ID}`],
+    ["compare-step", "/programs", "/wallet", "/saved", "/explorer", "/account", `/#${HOW_IT_WORKS_ID}`, `/#${PRINCIPLES_ID}`],
   );
 });

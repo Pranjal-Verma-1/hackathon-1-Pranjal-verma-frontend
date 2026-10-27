@@ -18,6 +18,7 @@ export function TripForm({
   errors,
   exampleNotice,
   headingRef,
+  submitting = false,
   onChange,
   onExample,
   onSubmit,
@@ -26,6 +27,7 @@ export function TripForm({
   errors: FieldErrors;
   exampleNotice: boolean;
   headingRef: RefObject<HTMLHeadingElement | null>;
+  submitting?: boolean;
   onChange: (patch: Partial<TripDraft>) => void;
   onExample: () => void;
   onSubmit: () => void;
@@ -425,12 +427,17 @@ export function TripForm({
 
       {/* Submit Button */}
       <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
-        <button type="submit" className={`${primaryButtonClass} min-h-[50px] px-8 text-base shadow-card`}>
-          Compare these figures
+        <button
+          type="submit"
+          className={`${primaryButtonClass} min-h-[50px] px-8 text-base shadow-card`}
+          disabled={submitting}
+          aria-busy={submitting}
+        >
+          {submitting ? "Comparing these figures" : "Compare these figures"}
           <span aria-hidden="true">➔</span>
         </button>
         <span className="text-xs text-muted">
-          Takes less than a second • Runs entirely on this device
+          Sent to the comparison service. Not a live fare or a booking.
         </span>
       </div>
     </form>

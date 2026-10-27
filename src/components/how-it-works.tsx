@@ -32,8 +32,8 @@ export function HowItWorks() {
           </span>
           <h3 className="mt-3 text-base font-bold text-ink">Uncover Real Math</h3>
           <p className="mt-1.5 text-xs leading-relaxed text-muted">
-            We deduct taxes and fees from the cash price to calculate the euros saved and the
-            euros each point is worth.
+            The comparison service returns the euro difference after taxes and fees. It does not
+            give the points a euro price.
           </p>
         </div>
 
@@ -41,10 +41,10 @@ export function HowItWorks() {
           <span className="flex size-8 items-center justify-center rounded-lg bg-subtle text-xs font-bold text-ink">
             03
           </span>
-          <h3 className="mt-3 text-base font-bold text-ink">Book With Clarity</h3>
+          <h3 className="mt-3 text-base font-bold text-ink">Check before you book</h3>
           <p className="mt-1.5 text-xs leading-relaxed text-muted">
-            Review a pre-booking checklist to confirm seat availability, transfer times, and refund
-            rules before ticketing.
+            Use the checklist to verify seat availability, transfer rules, and refund rules yourself.
+            A Una Milla does not confirm them.
           </p>
         </div>
       </div>

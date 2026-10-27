@@ -3,7 +3,9 @@ import { extname } from "node:path";
 
 registerHooks({
   resolve(specifier, context, nextResolve) {
-    if ((specifier.startsWith("./") || specifier.startsWith("../")) && extname(specifier) === "") {
+    const parent = context.parentURL ?? "";
+    const projectSource = parent.includes("/src/") && !parent.includes("/node_modules/");
+    if (projectSource && (specifier.startsWith("./") || specifier.startsWith("../")) && extname(specifier) === "") {
       return nextResolve(`${specifier}.ts`, context);
     }
     return nextResolve(specifier, context);

@@ -1,10 +1,22 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
 import { HEADER_LINKS, requestCompareStep } from "@/lib/navigation";
 
 const linkClass = "inline-flex min-h-11 cursor-pointer items-center border-0 bg-transparent p-0 text-sm font-medium text-muted transition-colors hover:text-ink";
 
 export function HeaderLinks() {
+  const pathname = usePathname();
+  const router = useRouter();
+
+  function openCompare() {
+    if (pathname !== "/") {
+      router.push("/?compare=1");
+      return;
+    }
+    requestCompareStep();
+  }
+
   return (
     <nav
       className="order-last flex w-full flex-wrap items-center gap-x-4 border-t border-line py-1 md:order-none md:w-auto md:flex-nowrap md:gap-6 md:border-0 md:py-0"
@@ -12,7 +24,7 @@ export function HeaderLinks() {
     >
       {HEADER_LINKS.map((link) =>
         link.kind === "compare-step" ? (
-          <button key={link.label} type="button" className={linkClass} onClick={requestCompareStep}>
+          <button key={link.label} type="button" className={linkClass} onClick={openCompare}>
             {link.label}
           </button>
         ) : (

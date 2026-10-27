@@ -4,8 +4,13 @@ export const OPEN_COMPARE_EVENT = "aum-open-compare";
 
 export const HEADER_LINKS = [
   { label: "Compare", kind: "compare-step" },
-  { label: "How it works", kind: "section", href: `#${HOW_IT_WORKS_ID}` },
-  { label: "Methodology", kind: "section", href: `#${PRINCIPLES_ID}` },
+  { label: "Programs", kind: "page", href: "/programs" },
+  { label: "Wallet", kind: "page", href: "/wallet" },
+  { label: "Saved", kind: "page", href: "/saved" },
+  { label: "Explorer", kind: "page", href: "/explorer" },
+  { label: "Account", kind: "page", href: "/account" },
+  { label: "How it works", kind: "section", href: `/#${HOW_IT_WORKS_ID}` },
+  { label: "Methodology", kind: "section", href: `/#${PRINCIPLES_ID}` },
 ] as const;
 
 export function requestCompareStep() {

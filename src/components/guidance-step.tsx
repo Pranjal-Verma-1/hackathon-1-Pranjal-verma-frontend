@@ -30,7 +30,7 @@ export function GuidanceStep({
       <div>
         <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted mb-2">
           <span className="size-2 rounded-full bg-emerald-600" />
-          <span>Stage 4 • Final Booking Guidance</span>
+          <span>Stage 4 • Check on a public site</span>
         </div>
         <h1 ref={headingRef} tabIndex={-1} className={headingClass}>
           What to do before you book
@@ -104,7 +104,7 @@ export function GuidanceStep({
 
         <div className="mt-5 max-w-md">
           <label htmlFor="carrier" className="block text-xs font-bold uppercase tracking-wider text-muted mb-1.5">
-            Select booking portal or airline
+            Public website
           </label>
           <select
             id="carrier"
@@ -139,7 +139,7 @@ export function GuidanceStep({
           </div>
         ) : (
           <p className="mt-3 text-xs text-tertiary">
-            No external booking link active. Select an airline from the dropdown if you need a quick shortcut.
+            No website selected. Choosing one opens its public homepage.
           </p>
         )}
       </section>

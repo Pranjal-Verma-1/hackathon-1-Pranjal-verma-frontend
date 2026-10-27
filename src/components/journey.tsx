@@ -1,13 +1,42 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { BOOKING_CHECKS } from "@/lib/booking";
+import {
+  comparisonErrorMessage,
+  isAbortError,
+  postComparison,
+  shouldStartComparison,
+  toComparisonRequest,
+  type ComparisonResult,
+} from "@/lib/comparison-api";
 import { checklistAfter } from "@/lib/journey-rules";
+import { CloudRecordsError } from "@/lib/cloud-records";
+import {
+  reloadSavedCloud,
+  requestReopenedComparison,
+  reopenedServerSnapshot,
+  reopenedSnapshot,
+  saveBrowserComparison,
+  subscribeReopened,
+} from "@/lib/cloud-browser";
+import { displayTripForSavedResult, newRecordId } from "@/lib/local-records";
 import { OPEN_COMPARE_EVENT } from "@/lib/navigation";
-import { compareRedemption } from "@/lib/savings";
-import { draftForMode, emptyDraft, exampleDraft, type TripDraft, type TripMode } from "@/lib/trip";
+import { draftForMode, emptyDraft, exampleDraft, type TripDraft, type TripMode, type ValidatedTrip } from "@/lib/trip";
 import { FIELD_ORDER, validateTrip, type FieldErrors } from "@/lib/validation";
 import { CompareStep, type ComparePhase } from "./compare-step";
+
+function subscribeToLocation() {
+  return () => {};
+}
+
+function currentSearch() {
+  return window.location.search;
+}
+
+function emptySearch() {
+  return "";
+}
 import { GuidanceStep } from "./guidance-step";
 import { HowItWorks } from "./how-it-works";
 import { ModeStep } from "./mode-step";
@@ -16,9 +45,9 @@ import { TripForm } from "./trip-form";
 
 type Phase =
   | { name: "editing" }
-  | ({ name: "calculating" } & { trip: TripDraft })
-  | Extract<ComparePhase, { name: "ready" }>
-  | Extract<ComparePhase, { name: "failed" }>;
+  | { name: "calculating" }
+  | { name: "ready"; trip: ValidatedTrip; result: ComparisonResult; savedAt?: string }
+  | { name: "unavailable"; trip: ValidatedTrip; message: string };
 
 export function Journey() {
   const [step, setStep] = useState<StepId>("mode");
@@ -28,9 +57,14 @@ export function Journey() {
   const [exampleNotice, setExampleNotice] = useState(false);
   const [carrierId, setCarrierId] = useState("");
   const [checks, setChecks] = useState<boolean[]>(() => BOOKING_CHECKS.map(() => false));
+  const [saveNotice, setSaveNotice] = useState("");
+  const [saveError, setSaveError] = useState("");
+  const [savingComparison, setSavingComparison] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const skipFocus = useRef(true);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const inFlight = useRef(false);
+  const requestSeq = useRef(0);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     if (skipFocus.current) {
@@ -42,9 +76,30 @@ export function Journey() {
 
   useEffect(() => {
     return () => {
-      if (timer.current) clearTimeout(timer.current);
+      abortRef.current?.abort();
     };
   }, []);
+
+  const search = useSyncExternalStore(subscribeToLocation, currentSearch, emptySearch);
+  const reopened = useSyncExternalStore(subscribeReopened, reopenedSnapshot, reopenedServerSnapshot);
+  const [handledSearch, setHandledSearch] = useState("");
+  const [openedSavedId, setOpenedSavedId] = useState("");
+  const savedId = new URLSearchParams(search).get("saved") ?? "";
+  if (search !== handledSearch) {
+    setHandledSearch(search);
+    if (new URLSearchParams(search).get("compare") === "1") setStep("compare");
+  }
+  if (savedId && reopened.id !== savedId) requestReopenedComparison(savedId);
+  if (savedId && reopened.id === savedId && reopened.status === "ready" && reopened.record && openedSavedId !== savedId) {
+    setOpenedSavedId(savedId);
+    setPhase({
+      name: "ready",
+      trip: displayTripForSavedResult(reopened.record.result),
+      result: reopened.record.result,
+      savedAt: reopened.record.savedAt,
+    });
+    setStep("compare");
+  }
 
   useEffect(() => {
     function openCompare() {
@@ -54,9 +109,11 @@ export function Journey() {
     return () => window.removeEventListener(OPEN_COMPARE_EVENT, openCompare);
   }, []);
 
-  function clearTimer() {
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = null;
+  function cancelRequest() {
+    requestSeq.current += 1;
+    abortRef.current?.abort();
+    abortRef.current = null;
+    inFlight.current = false;
   }
 
   function canVisit(target: StepId): boolean {
@@ -67,15 +124,17 @@ export function Journey() {
 
   function goTo(target: StepId) {
     if (!canVisit(target)) return;
-    if (target !== "compare") clearTimer();
+    if (target !== "compare") cancelRequest();
     if (phase.name === "calculating" && target !== "compare") setPhase({ name: "editing" });
     setStep(target);
   }
 
   function onMode(mode: TripMode) {
-    clearTimer();
+    cancelRequest();
     setDraft((current) => draftForMode(current, mode));
     setPhase({ name: "editing" });
+    setSaveNotice("");
+    setSaveError("");
     setErrors((current) => ({
       ...current,
       mode: undefined,
@@ -86,9 +145,11 @@ export function Journey() {
   }
 
   function onChange(patch: Partial<TripDraft>) {
-    clearTimer();
+    cancelRequest();
     setDraft((current) => ({ ...current, ...patch }));
     setPhase({ name: "editing" });
+    setSaveNotice("");
+    setSaveError("");
     setErrors((current) => {
       const next = { ...current };
       for (const key of Object.keys(patch) as (keyof TripDraft)[]) {
@@ -101,7 +162,7 @@ export function Journey() {
 
   function onExample() {
     if (draft.mode !== "quick" && draft.mode !== "full") return;
-    clearTimer();
+    cancelRequest();
     setDraft(exampleDraft(draft.mode));
     setErrors({});
     setPhase({ name: "editing" });
@@ -109,7 +170,60 @@ export function Journey() {
     setTimeout(() => document.getElementById("cashPrice")?.focus(), 0);
   }
 
+  async function runComparison(trip: ValidatedTrip) {
+    if (!shouldStartComparison(inFlight.current)) return;
+    inFlight.current = true;
+    const id = requestSeq.current;
+    const controller = new AbortController();
+    abortRef.current = controller;
+    setErrors({});
+    setSaveNotice("");
+    setSaveError("");
+    setPhase({ name: "calculating" });
+    setStep("compare");
+    try {
+      const result = await postComparison(toComparisonRequest(trip), { signal: controller.signal });
+      if (id !== requestSeq.current) return;
+      setChecks((current) => checklistAfter("comparison-ready", current));
+      setPhase({ name: "ready", trip, result });
+    } catch (error) {
+      if (id !== requestSeq.current || isAbortError(error)) return;
+      setPhase({ name: "unavailable", trip, message: comparisonErrorMessage(error) });
+    } finally {
+      if (id === requestSeq.current) {
+        inFlight.current = false;
+        abortRef.current = null;
+      }
+    }
+  }
+
+  async function onSaveComparison() {
+    if (phase.name !== "ready" || phase.savedAt || savingComparison) return;
+    const current = phase;
+    setSavingComparison(true);
+    setSaveNotice("");
+    setSaveError("");
+    setSaveError("");
+    try {
+      const saved = await saveBrowserComparison({
+        id: newRecordId(),
+        savedAt: new Date().toISOString(),
+        result: current.result,
+      });
+      setPhase((existing) =>
+        existing.name === "ready" && existing.result === current.result ? { ...existing, savedAt: saved.savedAt } : existing,
+      );
+      setSaveNotice("Saved with this account. The stored response is not recalculated.");
+      void reloadSavedCloud();
+    } catch (error) {
+      setSaveError(error instanceof CloudRecordsError ? error.message : "The comparison could not be saved.");
+    } finally {
+      setSavingComparison(false);
+    }
+  }
+
   function onSubmit() {
+    if (!shouldStartComparison(inFlight.current)) return;
     const parsed = validateTrip(draft);
     if (!parsed.ok) {
       setErrors(parsed.errors);
@@ -117,42 +231,36 @@ export function Journey() {
       if (first) document.getElementById(first)?.focus();
       return;
     }
-    clearTimer();
-    setErrors({});
-    const trip = parsed.trip;
-    setPhase({ name: "calculating", trip: draft });
-    setStep("compare");
-    timer.current = setTimeout(() => {
-      const comparison = compareRedemption({
-        cashPriceCents: trip.cashPriceCents,
-        pointsRequired: trip.pointsRequired,
-        taxesAndFeesCents: trip.taxesAndFeesCents,
-      });
-      if (comparison.status === "invalid") {
-        setPhase({ name: "failed", issues: comparison.issues });
-        return;
-      }
-      setChecks((current) => checklistAfter("comparison-ready", current));
-      setPhase({ name: "ready", trip, comparison });
-    }, 450);
+    void runComparison(parsed.trip);
   }
 
   function startOver() {
-    clearTimer();
+    cancelRequest();
     setDraft(emptyDraft());
     setErrors({});
     setPhase({ name: "editing" });
     setExampleNotice(false);
+    setSaveNotice("");
+    setSaveError("");
     setCarrierId("");
     setChecks((current) => checklistAfter("start-over", current));
     setStep("mode");
   }
 
-  const comparePhase: ComparePhase =
-    phase.name === "editing" ? { name: "empty" } : phase.name === "calculating" ? { name: "calculating" } : phase;
+  const comparePhase: ComparePhase = phase.name === "editing" ? { name: "empty" } : phase;
 
   return (
     <main id="main" className="mx-auto w-full max-w-6xl px-4 pb-16 pt-6 sm:px-6 sm:pt-8">
+      {savedId && reopened.id === savedId && reopened.status === "loading" ? (
+        <p className="mt-4 text-sm text-muted" role="status">
+          Opening the saved comparison.
+        </p>
+      ) : null}
+      {savedId && reopened.id === savedId && (reopened.status === "missing" || reopened.status === "error") ? (
+        <p className="mt-4 text-sm font-medium text-cost" role="alert">
+          {reopened.message}
+        </p>
+      ) : null}
       <StepRail current={step} canVisit={canVisit} onVisit={goTo} />
       <div className="mt-8">
         {step === "mode" ? (
@@ -178,6 +286,7 @@ export function Journey() {
             headingRef={headingRef}
             onChange={onChange}
             onExample={onExample}
+            submitting={phase.name === "calculating"}
             onSubmit={onSubmit}
           />
         ) : null}
@@ -186,10 +295,17 @@ export function Journey() {
             phase={comparePhase}
             headingRef={headingRef}
             onBack={() => {
-              clearTimer();
+              cancelRequest();
               if (phase.name === "calculating") setPhase({ name: "editing" });
               setStep("trip");
             }}
+            onRetry={() => {
+              if (phase.name === "unavailable") void runComparison(phase.trip);
+            }}
+            onSave={() => void onSaveComparison()}
+            saveNotice={saveNotice}
+            saveError={saveError}
+            saving={savingComparison}
             onGuidance={() => {
               if (phase.name === "ready") setStep("guide");
             }}

@@ -62,7 +62,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 <strong className="font-semibold text-ink">Demo:</strong> Estimates use only the figures you enter. This app does not search live fares, check award seats, or sell tickets.
               </p>
               <span className="hidden shrink-0 font-mono text-[11px] text-tertiary sm:inline">
-                EUR • Points valuation
+                EUR • Savings estimate
               </span>
             </div>
           </div>
@@ -90,7 +90,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 <ul className="mt-3 space-y-2 text-sm text-muted">
                   <li>1. Choose Quick Flight or Full Trip Plan</li>
                   <li>2. Enter route, dates, travellers, and prices</li>
-                  <li>3. Compare net savings and value per point</li>
+                  <li>3. Compare the euro difference</li>
                   <li>4. Review your booking checklist</li>
                 </ul>
               </div>

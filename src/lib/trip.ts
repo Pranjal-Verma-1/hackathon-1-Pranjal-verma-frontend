@@ -165,7 +165,7 @@ export function preferenceLines(trip: ValidatedTrip): string[] {
         ? `Flexible dates: ${trip.dateWindow}`
         : "Flexible dates, with no window written down"
       : "Fixed dates",
-    trip.nearbyAirports ? "Nearby airports included" : "Nearby airports not requested",
+    trip.nearbyAirports ? "Reminder to check nearby airports" : "Nearby airports not requested",
     `Cabin: ${CABIN_LABEL[trip.cabin]}`,
     ...(trip.notes ? [`Note: ${trip.notes}`] : []),
   ];
