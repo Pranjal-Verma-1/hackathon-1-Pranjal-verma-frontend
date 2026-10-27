@@ -1,10 +1,5 @@
-import { cloneElement, type ReactElement } from "react";
-
-type ControlProps = {
-  id?: string;
-  "aria-describedby"?: string;
-  "aria-invalid"?: boolean | undefined;
-};
+import type { ReactElement, ReactNode } from "react";
+import { stampControl } from "@/lib/control-props";
 
 export const controlClass =
   "min-h-12 w-full max-w-full rounded-md border border-line-strong bg-sheet px-3.5 text-base leading-normal text-ink outline-none transition-all placeholder:text-tertiary hover:border-ink focus:border-ink focus-visible:outline-2 focus-visible:outline-ink focus-visible:outline-offset-2";
@@ -31,12 +26,12 @@ export function Field({
   label: string;
   hint?: string;
   error?: string;
-  children: ReactElement<ControlProps>;
+  children: ReactElement<{ children?: ReactNode }>;
 }) {
   const hintId = hint ? `${id}-hint` : undefined;
   const errorId = error ? `${id}-error` : undefined;
   const describedBy = [hintId, errorId].filter(Boolean).join(" ") || undefined;
-  const control = cloneElement(children, {
+  const control = stampControl(children, {
     id,
     "aria-invalid": error ? true : undefined,
     "aria-describedby": describedBy,

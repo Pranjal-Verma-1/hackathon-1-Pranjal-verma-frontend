@@ -211,7 +211,7 @@ export function CompareStep({
           <div className="mt-1.5 text-lg sm:text-xl font-bold tracking-tight tabular-nums text-ink">
             {formatPerPoint(comparison.valuePerPointEur)}
           </div>
-          <span className="text-[11px] text-tertiary">Cents per point</span>
+          <span className="text-[11px] text-tertiary">Euros per point</span>
         </div>
 
         <div className="rounded-xl border border-line bg-sheet p-4 shadow-subtle">

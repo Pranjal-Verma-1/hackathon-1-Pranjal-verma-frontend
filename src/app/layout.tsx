@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Literata, Schibsted_Grotesk } from "next/font/google";
+import { HeaderLinks } from "@/components/header-links";
 import { MileMark } from "@/components/mile-mark";
 import "./globals.css";
 
@@ -30,8 +31,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to the trip
         </a>
         <header className="sticky top-0 z-30 border-b border-line bg-sheet/95 backdrop-blur-sm">
-          <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-            <div className="flex items-center gap-3">
+          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-4 px-4 sm:px-6 md:h-16 md:flex-nowrap">
+            <div className="flex h-16 items-center gap-3">
               <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-ink text-marker shadow-sm transition-transform hover:scale-105">
                 <MileMark className="size-5" />
               </span>
@@ -45,19 +46,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               </div>
             </div>
 
-            <nav className="hidden items-center gap-6 text-sm font-medium text-muted md:flex" aria-label="Quick links">
-              <a href="#main" className="transition-colors hover:text-ink">
-                Compare
-              </a>
-              <a href="#how-it-works" className="transition-colors hover:text-ink">
-                How it works
-              </a>
-              <a href="#principles" className="transition-colors hover:text-ink">
-                Methodology
-              </a>
-            </nav>
+            <HeaderLinks />
 
-            <div className="flex items-center gap-3">
+            <div className="flex h-16 items-center gap-3">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-subtle px-2.5 py-1 text-xs font-semibold text-muted">
                 <span className="size-1.5 rounded-full bg-emerald-600" />
                 Demo Mode
@@ -67,7 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 
           <div className="border-t border-line bg-subtle/80 px-4 py-1.5 text-xs text-muted">
             <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-0 sm:px-2">
-              <p className="truncate">
+              <p className="min-w-0 leading-5">
                 <strong className="font-semibold text-ink">Demo:</strong> Estimates use only the figures you enter. This app does not search live fares, check award seats, or sell tickets.
               </p>
               <span className="hidden shrink-0 font-mono text-[11px] text-tertiary sm:inline">

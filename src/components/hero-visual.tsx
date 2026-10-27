@@ -1,3 +1,8 @@
+import { formatValuePerPoint } from "@/lib/money";
+
+/** Madrid–Barcelona sample: (€186 − €42) / 12,500 points, shown in euros. */
+const sampleValuePerPoint = formatValuePerPoint((186 - 42) / 12_500);
+
 export function HeroVisual() {
   return (
     <div className="relative mx-auto w-full max-w-lg lg:max-w-none">
@@ -34,7 +39,7 @@ export function HeroVisual() {
             {/* Route Stats in Center */}
             <div className="flex flex-col items-center px-2">
               <span className="rounded-full bg-subtle border border-line px-2 py-0.5 text-[10px] font-semibold text-tertiary">
-                505 km • Non-stop
+                Sample distance: 505 km
               </span>
             </div>
 
@@ -79,7 +84,7 @@ export function HeroVisual() {
 
           <div className="flex items-center justify-between text-[11px] text-tertiary border-t border-line/80 pt-2.5">
             <span>Illustrative sample pair</span>
-            <span>Est. flight: 1h 15m</span>
+            <span>Sample time: 1h 15m</span>
           </div>
         </div>
 
@@ -131,7 +136,7 @@ export function HeroVisual() {
             <div className="text-right">
               <span className="text-xs font-medium text-emerald-800/80">Value per point:</span>
               <div className="text-base font-bold text-emerald-900">
-                1.15 ¢/pt
+                {sampleValuePerPoint}
               </div>
             </div>
           </div>

@@ -2,11 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import { BOOKING_CHECKS } from "@/lib/booking";
+import { checklistAfter } from "@/lib/journey-rules";
+import { OPEN_COMPARE_EVENT } from "@/lib/navigation";
 import { compareRedemption } from "@/lib/savings";
 import { draftForMode, emptyDraft, exampleDraft, type TripDraft, type TripMode } from "@/lib/trip";
 import { FIELD_ORDER, validateTrip, type FieldErrors } from "@/lib/validation";
 import { CompareStep, type ComparePhase } from "./compare-step";
 import { GuidanceStep } from "./guidance-step";
+import { HowItWorks } from "./how-it-works";
 import { ModeStep } from "./mode-step";
 import { StepRail, type StepId } from "./step-rail";
 import { TripForm } from "./trip-form";
@@ -43,15 +46,22 @@ export function Journey() {
     };
   }, []);
 
+  useEffect(() => {
+    function openCompare() {
+      setStep("compare");
+    }
+    window.addEventListener(OPEN_COMPARE_EVENT, openCompare);
+    return () => window.removeEventListener(OPEN_COMPARE_EVENT, openCompare);
+  }, []);
+
   function clearTimer() {
     if (timer.current) clearTimeout(timer.current);
     timer.current = null;
   }
 
   function canVisit(target: StepId): boolean {
-    if (target === "mode") return true;
+    if (target === "mode" || target === "compare") return true;
     if (target === "trip") return draft.mode !== null;
-    if (target === "compare") return phase.name !== "editing";
     return phase.name === "ready";
   }
 
@@ -122,6 +132,7 @@ export function Journey() {
         setPhase({ name: "failed", issues: comparison.issues });
         return;
       }
+      setChecks((current) => checklistAfter("comparison-ready", current));
       setPhase({ name: "ready", trip, comparison });
     }, 450);
   }
@@ -133,7 +144,7 @@ export function Journey() {
     setPhase({ name: "editing" });
     setExampleNotice(false);
     setCarrierId("");
-    setChecks(BOOKING_CHECKS.map(() => false));
+    setChecks((current) => checklistAfter("start-over", current));
     setStep("mode");
   }
 
@@ -149,7 +160,12 @@ export function Journey() {
             mode={draft.mode}
             headingRef={headingRef}
             onMode={onMode}
-            onContinue={() => {
+            onContinue={(nextMode) => {
+              if (nextMode) {
+                if (draft.mode !== nextMode) onMode(nextMode);
+                setStep("trip");
+                return;
+              }
               if (draft.mode) setStep("trip");
             }}
           />
@@ -193,6 +209,7 @@ export function Journey() {
           />
         ) : null}
       </div>
+      <HowItWorks />
     </main>
   );
 }
